@@ -7,6 +7,9 @@
 // Include HW dependencies:
 #include "port_system.h"
 #include "stm32f4_system.h"
+#include "stm32f4_button.h"
+#include "port_button.h"
+#include "stm32f4xx.h"
 
 // Include headers of different port elements:
 
@@ -28,4 +31,33 @@
  */
 void SysTick_Handler(void)
 {
+    uint32_t ms = port_system_get_millis();
+    port_system_set_millis(ms + 1);
+}
+
+/**
+ * @brief Interrupt service routine for the EXTI line 15 to 10.
+ * 
+ * 
+ */
+void EXTI15_10_IRQHandler(void)
+{
+    /* ISR user button */
+    if (EXTI->PR & BIT_POS_TO_MASK(buttons_arr[PORT_USER_BUTTON_ID].pin))
+    {
+        GPIO_TypeDef *p_port = buttons_arr[PORT_USER_BUTTON_ID].p_port;
+        uint8_t pin = buttons_arr[PORT_USER_BUTTON_ID].pin;
+        bool activated = stm32f4_system_gpio_read(p_port, pin);
+        //Activado por flanco de bajada, el pin se pone a 0 cuando se pulsa el botón, por lo que si el pin está activado, el botón no está pulsado
+        if(activated)
+        {
+            buttons_arr[PORT_USER_BUTTON_ID].flag_pressed = false;
+        }
+        else
+        {
+            buttons_arr[PORT_USER_BUTTON_ID].flag_pressed = true;
+        }
+        //Clear pending bit of the EXTI line associated with the USER BUTTON pin
+        EXTI->PR = BIT_POS_TO_MASK(buttons_arr[PORT_USER_BUTTON_ID].pin); 
+    }
 }

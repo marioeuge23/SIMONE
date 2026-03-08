@@ -180,12 +180,12 @@ void port_system_delay_until_ms(uint32_t *p_t, uint32_t ms)
 
 uint32_t port_system_get_millis()
 {
-  return 0;
+  return msTicks; /* ms */
 }
 
 void port_system_set_millis(uint32_t ms)
 {
-
+  msTicks = ms;
 }
 
 // ------------------------------------------------------
@@ -294,6 +294,34 @@ void stm32f4_system_gpio_config_alternate(GPIO_TypeDef *p_port, uint8_t pin, uin
 
   p_port->AFR[(uint8_t)(pin / 8)] &= ~(base_mask << displacement);
   p_port->AFR[(uint8_t)(pin / 8)] |= (alternate << displacement);
+}
+
+void stm32f4_system_gpio_config_output(GPIO_TypeDef *p_port, uint8_t pin, uint8_t pupd)
+{
+  
+}
+
+bool stm32f4_system_gpio_read(GPIO_TypeDef *p_port, uint8_t pin)
+{
+  return (bool)(p_port->IDR & BIT_POS_TO_MASK(pin));
+}
+
+void stm32f4_system_gpio_write(GPIO_TypeDef *p_port, uint8_t pin, bool value)
+{
+  if (value)
+  {
+    p_port->BSRR = BIT_POS_TO_MASK(pin);
+  }
+  else
+  {
+    p_port->BSRR = BIT_POS_TO_MASK(pin) << 16;
+  }
+}
+
+void stm32f4_system_gpio_toggle(GPIO_TypeDef *p_port, uint8_t pin)
+{
+  bool estado_actual = stm32f4_system_gpio_read(p_port, pin);
+  stm32f4_system_gpio_write(p_port, pin, !estado_actual);
 }
 
 // ------------------------------------------------------
