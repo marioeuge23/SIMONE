@@ -19,6 +19,7 @@
 
 /* Defines and enums ----------------------------------------------------------*/
 /* Enums */
+/** @brief Different states for the button */
 enum FSM_BUTTON {
     BUTTON_RELEASED,
     BUTTON_RELEASED_WAIT,
