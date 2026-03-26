@@ -15,7 +15,7 @@
 
 /* Defines and enums ----------------------------------------------------------*/
 /** @brief Main keyboard for the game */
-#define PORT_KEYBOARD_MAIN_ID
+#define PORT_KEYBOARD_MAIN_ID 0
 
 /** @brief Timeout for row excitation (25 ms following manual) */
 #define PORT_KEYBOARDS_TIMEOUT_MS 25

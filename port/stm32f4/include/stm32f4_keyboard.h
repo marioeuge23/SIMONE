@@ -37,16 +37,19 @@
 #define STM32F4_KEYBOARD_MAIN_COL_3_GPIO GPIOB
 #define STM32F4_KEYBOARD_MAIN_COL_3_PIN  5
 
+/**
+ * @brief Estructura que mapea el hardware real con la lógica de la FSM.
+ */
 typedef struct {
     const keyboard_t *p_keyboard;
-    GPIO_TypeDef **p_row_ports;
-    uint8_t *p_row_pins;
-    GPIO_TypeDef **p_col_ports;
-    uint8_t *p_col_pins;
-    bool flag_key_pressed;
-    bool flag_row_timeout;
-    uint8_t col_idx_interrupt;
-    uint8_t current_excited_row;
+    GPIO_TypeDef **p_row_ports;      /**< Array de punteros a los puertos de las filas */
+    uint8_t *p_row_pins;             /**< Array de máscaras de pins de las filas */
+    GPIO_TypeDef **p_col_ports;      /**< Array de punteros a los puertos de las columnas */
+    uint8_t *p_col_pins;             /**< Array de máscaras de pins (ej. 0x0100) */
+    bool flag_key_pressed;           /**< 'true' si una columna detectó un pulso */
+    bool flag_row_timeout;           /**< 'true' si el Timer 5 pide cambio de fila */
+    uint8_t col_idx_interrupt;       /**< Fila que está alimentada actualmente (0-3) */
+    uint8_t current_excited_row;     /**< Columna capturada en la interrupción */
 } stm32f4_keyboard_hw_t;
 
 /**
